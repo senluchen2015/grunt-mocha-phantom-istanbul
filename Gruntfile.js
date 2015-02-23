@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       // In this example, there's only one, but you can add as many as
       // you want. You can split them up into different groups here
       // ex: admin: [ 'test/admin.html' ]
-      all: ['example/test/**/!(test2|testBail).html'],
+      all: ['example/test/**/!(test2|testBail|testCoverage).html'],
 
       // Runs 'test/test2.html' with specified mocha options.
       // This variant auto-includes 'bridge.js' so you do not have
@@ -147,6 +147,21 @@ module.exports = function(grunt) {
         options: {
           run: true
         }
+      },
+
+      // Test Istanbul integration.
+      testCoverage: {
+          src: ['example/test/testCoverage.html'],
+          options: {
+              run: true,
+              coverage: {
+                htmlReport: 'example/test/results/coverage.out/html',
+                coberturaReport: 'example/test/results/coverage.out/cobertura',
+                lcovReport: 'example/test/results/coverage.out/lcov',
+                cloverReport: 'example/test/results/coverage.out/clover',
+                jsonReport: 'example/test/results/coverage.out/json'
+              }
+          }
       }
     },
 
@@ -182,6 +197,28 @@ module.exports = function(grunt) {
       grunt.file.delete(output);
       grunt.log.ok('Reporter output non-empty for %s', reporter);
     });
+
+    // Check for Coverage Reports.
+    var expectedCoverage = [
+      'cobertura/cobertura-coverage.xml',
+      'lcov/lcov.info',
+      'clover/clover.xml',
+      'json/coverage.json',
+      'html/index.html'
+    ];
+
+    expectedCoverage.forEach(function (reporter) {
+      var output = 'example/test/results/coverage.out/' + reporter;
+
+      if (!grunt.file.read(output, 'utf8')) {
+        grunt.fatal('Empty reporter output: ' + reporter);
+      }
+
+      grunt.log.ok('Reporter output non-empty for %s', reporter);
+    });
+
+    // Clean-up.
+    grunt.file.delete('example/test/results/coverage.out');
   });
 
   // IMPORTANT: Actually load this plugin's task(s).
@@ -201,6 +238,7 @@ module.exports = function(grunt) {
     'mocha:testDest1',
     'connect:testDest',
     'mocha:testDest2',
+    'mocha:testCoverage',
     'verifyDestResults'
   ]);
   // WARNING: Running this test will cause grunt to fail after mocha:testBail
