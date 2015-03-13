@@ -14,11 +14,35 @@ See [grunt-mocha](https://github.com/kmiyashiro/grunt-mocha) for all additional 
 
 The options for this are specified in the coverage object.
 
-#### options.coverage.coverageFile
+#### options.coverage.jsonReport
 Type: `String`
-Default: `'coverage/coverage.json'`
+Default: `undefined`
 
-The file to write the coverage json data to.
+The folder to write a `coverage.json` file to, defaults to no report being generated.
+
+#### options.coverage.htmlReport
+Type: `String`
+default: `undefined`
+
+Destination folder to write an HTML report to, defaults to no report being generated.
+
+#### options.coverage.coberturaReport
+Type: `String`
+default: `undefined`
+
+Destination folder to write a `cobertura-coverage.xml` file to, defaults to no report being generated.
+
+#### options.coverage.lcovReport
+Type: `String`
+default: `undefined`
+
+Destination folder to write a `lcov.info` file to, defaults to no report being generated.
+
+#### options.coverage.cloverReport
+Type: `String`
+default: `undefined`
+
+Destination folder to write a `clover.xml` file to, defaults to no report being generated.
 
 Example:
 ```js
@@ -27,7 +51,7 @@ mocha: {
     files: ['tests/**/*.html'],
     options: {
       coverage: {
-        coverageFile: 'somePath/myCoverage.json'
+        htmlReport: 'coverage/html'
       }
     }
   },

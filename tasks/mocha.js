@@ -311,13 +311,35 @@ module.exports = function(grunt) {
         var finalCoverage = collector.getFinalCoverage(); // TODO do this a different way, bad for large # of files
         stats.coverage = istanbul.utils.summarizeCoverage(finalCoverage);
 
-        var coverageFile = options.coverage && options.coverage.coverageFile || 'coverage/coverage.json';
+        var coverageOptions = options.coverage || {};
 
         // check if coverage was enable during the testrun
-        if (stats.coverage && stats.coverage.lines && stats.coverage.lines.total > 0 && coverageFile) {
+        if (stats.coverage && stats.coverage.lines && stats.coverage.lines.total > 0) {
+
+          if (coverageOptions.htmlReport) {
+            istanbul.Report.create('html', { dir: coverageOptions.htmlReport })
+              .writeReport(collector, true);
+          }
+
+          if (coverageOptions.coberturaReport) {
+            istanbul.Report.create('cobertura', { dir: coverageOptions.coberturaReport })
+              .writeReport(collector, true);
+          }
+
+          if (coverageOptions.lcovReport) {
+            istanbul.Report.create('lcov', { dir: coverageOptions.lcovReport })
+              .writeReport(collector, true);
+          }
+
+          if (coverageOptions.cloverReport) {
+            istanbul.Report.create('clover', { dir: coverageOptions.cloverReport })
+              .writeReport(collector, true);
+          }
 
           // write the coverage json to a file
-          grunt.file.write(coverageFile, JSON.stringify(finalCoverage));
+          if (coverageOptions.jsonReport) {
+            grunt.file.write(coverageOptions.jsonReport + '/coverage.json', JSON.stringify(finalCoverage));
+          }
 
           grunt.log.ok('Coverage:');
           grunt.log.ok('-  Lines: ' + stats.coverage.lines.pct + '%');
