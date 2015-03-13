@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       // In this example, there's only one, but you can add as many as
       // you want. You can split them up into different groups here
       // ex: admin: [ 'test/admin.html' ]
-      all: ['example/test/**/!(test2|testBail|testCoverage).html'],
+      all: ['example/test/**/!(test2|testBail|testPage|testCoverage).html'],
 
       // Runs 'test/test2.html' with specified mocha options.
       // This variant auto-includes 'bridge.js' so you do not have
@@ -149,19 +149,31 @@ module.exports = function(grunt) {
         }
       },
 
+      // Test page options
+      testPage: {
+        src: ['example/test/testPage.html'],
+        options: {
+          page: {
+            settings: {
+              userAgent: 'grunt-mocha-agent'
+            }
+          }
+        }
+      },
+
       // Test Istanbul integration.
       testCoverage: {
-          src: ['example/test/testCoverage.html'],
-          options: {
-              run: true,
-              coverage: {
-                htmlReport: 'example/test/results/coverage.out/html',
-                coberturaReport: 'example/test/results/coverage.out/cobertura',
-                lcovReport: 'example/test/results/coverage.out/lcov',
-                cloverReport: 'example/test/results/coverage.out/clover',
-                jsonReport: 'example/test/results/coverage.out/json'
-              }
+        src: ['example/test/testCoverage.html'],
+        options: {
+          run: true,
+          coverage: {
+            htmlReport: 'example/test/results/coverage.out/html',
+            coberturaReport: 'example/test/results/coverage.out/cobertura',
+            lcovReport: 'example/test/results/coverage.out/lcov',
+            cloverReport: 'example/test/results/coverage.out/clover',
+            jsonReport: 'example/test/results/coverage.out/json'
           }
+        }
       }
     },
 
@@ -241,6 +253,7 @@ module.exports = function(grunt) {
     'mocha:testCoverage',
     'verifyDestResults'
   ]);
+  grunt.task.registerTask('testPage', ['mocha:testPage']);
   // WARNING: Running this test will cause grunt to fail after mocha:testBail
   grunt.task.registerTask('testBail', ['mocha:testBail', 'mocha:neverTest']);
   grunt.task.registerTask('test', [
@@ -249,7 +262,8 @@ module.exports = function(grunt) {
     'testLog',
     'testReporter',
     'testDest',
-    'testBail'
+    'testPage',
+    'testBail',
   ]);
 
   // By default, lint and run all tests.
