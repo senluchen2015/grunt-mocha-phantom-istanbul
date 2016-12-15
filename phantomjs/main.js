@@ -11,6 +11,11 @@
 /*global phantom:true*/
 
 'use strict';
+if (!phantom.args) {
+  var system = require('system');
+  phantom.args = system.args;
+  phantom.args.shift();
+}
 
 var fs = require('fs');
 var _ = require('lodash');
